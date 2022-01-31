@@ -22,4 +22,5 @@ class RoomBase(BaseModel):
 class UserIn(UserBase):
     first_name: str
     last_name: str
+    password: str
     
