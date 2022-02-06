@@ -41,9 +41,7 @@ class User(Base):
 
     user_id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True)
-    first_name = Column(String)
-    last_name = Column(String)
+    password = Column(String)
     role_id = Column(Integer, ForeignKey('role.role_id'))
 
     role = relationship('Role', backref=backref('users', lazy='dynamic'))
-

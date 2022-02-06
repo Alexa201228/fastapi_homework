@@ -1,14 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class Role(BaseModel):
-    id: int
-    description: str
+    role_id: int
+    role_description: str
+
+    class Config:
+        orm_mode = True
 
 
 class UserBase(BaseModel):
     id: int
-    email: EmailStr
     role: Role
     
     class Config:
@@ -20,7 +22,12 @@ class RoomBase(BaseModel):
 
 
 class UserIn(UserBase):
-    first_name: str
-    last_name: str
+    email: EmailStr
     password: str
-    
+
+
+class UserOut(UserBase):
+    email: str
+
+    class Config:
+        orm_mode = True
