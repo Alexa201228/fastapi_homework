@@ -1,0 +1,27 @@
+version: "3.4"
+
+services:
+  sqlite3:
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    container_name: fastapi_sqlite
+    restart: on-failure
+    ports:
+      - "4000:4000"
+
+  web:
+    build:
+      context: .
+    restart: always
+    container_name: fastapi_web
+    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 7000 --reload"
+    volumes:
+      - type: bind
+        source: .
+        target: /code
+    working_dir: /code
+    ports:
+      - "7000:7000"
+    depends_on:
+      - sqlite3

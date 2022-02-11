@@ -20,6 +20,7 @@ class BookNumber(Base):
     number_id = Column(Integer, primary_key=True, index=True)
     arrival_date = Column(DateTime(timezone=True))
     leaving_date = Column(DateTime(timezone=True))
+    room_key = Column(Integer, ForeignKey('room.room_id', name='fk_room_book_number_room_id'))
 
     __table_args__ = (
         CheckConstraint('arrival_date < leaving_date'),
@@ -31,6 +32,7 @@ class Room(Base):
     __tablename__ = 'room'
 
     room_id = Column(Integer, primary_key=True, index=True)
+    room_space = Column(Integer, default=1)
     price_for_night = Column(Integer)
     book_numbers = relationship('BookNumber', backref=backref('room', lazy='dynamic'))
 

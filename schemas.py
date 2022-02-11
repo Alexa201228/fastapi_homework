@@ -1,3 +1,6 @@
+from datetime import datetime
+from decimal import Decimal
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -15,10 +18,6 @@ class UserBase(BaseModel):
     
     class Config:
         orm_mode = True
-        
-
-class RoomBase(BaseModel):
-    id: int
 
 
 class UserIn(UserBase):
@@ -31,3 +30,21 @@ class UserOut(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class RoomBase(BaseModel):
+    room_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class RoomIn(RoomBase):
+    space_count: int
+    price: Decimal
+
+
+class RoomSearch(BaseModel):
+    date_in: datetime
+    date_out: datetime
+    space_occupied: int

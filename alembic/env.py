@@ -9,13 +9,16 @@ from sqlalchemy import pool
 from alembic import context
 
 sys.path.append(dirname(dirname(abspath(__file__))))   
-from configs.database import Base
+from configs.database import Base, SQL_DATABASE_URL
 from models import User, Role, BookNumber, Room
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
+context.configure(
+    url=SQL_DATABASE_URL,
+    render_as_batch=True
+)
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
