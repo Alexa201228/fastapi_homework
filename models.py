@@ -34,7 +34,7 @@ class Room(Base):
     room_id = Column(Integer, primary_key=True, index=True)
     room_space = Column(Integer, default=1)
     price_for_night = Column(Integer)
-    book_numbers = relationship('BookNumber', backref=backref('room', lazy='dynamic'))
+    book_numbers = relationship('BookNumber', backref=backref('room'))
 
 
 class User(Base):

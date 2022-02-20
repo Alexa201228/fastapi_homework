@@ -25,6 +25,11 @@ class UserIn(UserBase):
     password: str
 
 
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class UserOut(UserBase):
     email: str
 
@@ -48,3 +53,7 @@ class RoomSearch(BaseModel):
     date_in: datetime
     date_out: datetime
     space_occupied: int
+
+
+class BookingInfo(BaseModel):
+    number_id: int

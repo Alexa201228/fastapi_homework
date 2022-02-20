@@ -1,4 +1,4 @@
-from sqlalchemy import and_
+from sqlalchemy import and_, select
 from sqlalchemy.orm import Session
 
 import models, schemas
@@ -9,6 +9,22 @@ async def get_user_by_email(db_session: Session, user_email: str):
     if user:
         return user
     raise KeyError('User with this email does not exist')
+
+
+async def get_user_by_email_and_password(db_session: Session, user: schemas.UserLogin):
+    user = db_session.query(models.User).filter(and_(models.User.email == user.email,
+                                                     models.User.password == user.password)).first()
+    return user
+
+
+async def get_all_users_with_roles(db_session: Session):
+    users = db_session.execute(select(models.User, models.Role.role_description)).fetchall()
+    return users
+
+
+async def get_all_rooms(db_session: Session):
+    rooms = db_session.query(models.Room).all()
+    return rooms
 
 
 async def create_user(db_session: Session, new_user: schemas.UserIn):
@@ -63,5 +79,13 @@ async def search_room_by_dates_and_space(db_session: Session, room: schemas.Room
                          models.BookNumber.leaving_date == room.date_out)).fetchall()
         rooms = db_session.query(models.Room).filter(models.Room.room_id.in_(book_numbers_rooms)).fetchall()
         return rooms
+    except Exception as e:
+        raise e
+
+
+async def get_booking_info(db_session: Session, booking_number: int):
+    try:
+        booked_num = db_session.query(models.BookNumber).filter(models.BookNumber.number_id == booking_number)
+        return booked_num.first()
     except Exception as e:
         raise e

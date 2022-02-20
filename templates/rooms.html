@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Комнаты</title>
+{% endblock %}
+{% block content %}
+<div class="my-5 d-flex">
+    <table class="mx-5 w-100">
+        <thead>
+            <tr>
+                <th>Номер комнаты</th>
+                <th>Количество мест</th>
+                <th>Цена за сутки</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room.room_id }}</td>
+                <td>{{ room.room_space }}</td>
+                <td>{{ room.price_for_night }}$</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>SimBooking.com</title>
-</head>
-<body>
+{% extends "base.html" %}
+  {% block title %}
+  <title>SimBooking.com</title>
+  {% endblock %}
+
+{% block content %}
 <div>
   <h3>Hello {{ hello }}</h3>
 </div>
-</body>
-</html>
+{% endblock %}

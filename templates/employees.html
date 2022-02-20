@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Сотрудники</title>
+{% endblock %}
+
+{% block content %}
+<div>
+    {% for employee in employees %}
+        <p>{{ employee[0].email }} {{ employee[1] }}</p>
+    {% endfor %}
+</div>
+{% endblock %}
