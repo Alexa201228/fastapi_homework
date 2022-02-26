@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from decimal import Decimal
 
 from pydantic import BaseModel, EmailStr
@@ -20,9 +20,10 @@ class UserBase(BaseModel):
         orm_mode = True
 
 
-class UserIn(UserBase):
+class UserIn(BaseModel):
     email: EmailStr
     password: str
+    role: str
 
 
 class UserLogin(BaseModel):
@@ -40,18 +41,20 @@ class UserOut(UserBase):
 class RoomBase(BaseModel):
     room_id: int
 
-    class Config:
-        orm_mode = True
-
 
 class RoomIn(RoomBase):
     space_count: int
-    price: Decimal
+    price: int
+
+
+class RoomBook(RoomBase):
+    date_in: date
+    date_out: date
 
 
 class RoomSearch(BaseModel):
-    date_in: datetime
-    date_out: datetime
+    date_in: date
+    date_out: date
     space_occupied: int
 
 

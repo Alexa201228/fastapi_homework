@@ -4,9 +4,41 @@
 {% endblock %}
 
 {% block content %}
-<div>
-    {% for employee in employees %}
-        <p>{{ employee[0].email }} {{ employee[1] }}</p>
-    {% endfor %}
+<div class="my-5 d-flex justify-content-center">
+    <form class="d-flex flex-column" action="/create_user" method="post">
+        <div class="d-flex flex-column my-1">
+            <label class="mb-2">Email нового сотрудника</label>
+            <input type="text" placeholder="email сотрудника" name="user_email"/>
+        </div>
+        <div class="d-flex flex-column my-1">
+            <label class="mb-2">Пароль для нового сотрудника</label>
+            <input type="text" placeholder="пароль" name="password">
+        </div>
+        <div class="d-flex flex-column my-1">
+            <label class="mb-2">Должность сотрудника</label>
+            <input type="text" placeholder="должность" name="role">
+        </div>
+        <br/>
+        <input type="submit" value="Добавить">
+    </form>
+</div>
+<div class="my-5 d-flex">
+    <table class="mx-5 w-100">
+        <thead>
+        <tr>
+            <th>Email сотрудника</th>
+            <th>Должность</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>{{ employee[0].email }}</td>
+                    <td>{{ employee[1] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </div>
 {% endblock %}
