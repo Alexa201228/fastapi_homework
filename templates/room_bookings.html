@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Найти брони</title>
+{% endblock %}
+{% block content %}
+<div class="my-5 d-flex justify-content-center">
+    <form class="d-flex flex-column" action="/get_all_room_bookings" method="post">
+        <h4>Найти брони</h4>
+        <div class="d-flex flex-column my-1">
+            <label class="mb-2">Номер комнаты</label>
+            <input type="number" placeholder="номер комнаты" min="0" name="room_number"/>
+        </div>
+        <br/>
+        <input type="submit" value="Поиск">
+    </form>
+</div>
+<div class="my-5 d-flex">
+    <table class="mx-5 w-100">
+        <thead>
+            <tr>
+                <th>Номер брони</th>
+                <th>Дата заезда</th>
+                <th>Дата отъезда</th>
+                <th>Вместительность</th>
+                <th>Цена</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if rooms %}
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room[0].number_id }}</td>
+                <td>{{ room[0].arrival_date }}</td>
+                <td>{{ room[0].leaving_date }}</td>
+                <td>{{ room[1].room_space }}</td>
+                <td>{{ room[1].price_for_night }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

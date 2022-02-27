@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session
@@ -86,11 +86,22 @@ async def search_room_by_dates_and_space(db_session: Session, room: schemas.Room
     :return:
     """
     try:
-        book_numbers_rooms = db_session.query(models.BookNumber.room.room_id)\
-            .filter(and_(models.BookNumber.room.room_space == room.space_occupied,
-                         models.BookNumber.arrival_date == room.date_in,
-                         models.BookNumber.leaving_date == room.date_out)).fetchall()
-        rooms = db_session.query(models.Room).filter(models.Room.room_id.in_(book_numbers_rooms)).fetchall()
+        book_numbers_rooms = await get_all_booking_numbers(db_session=db_session)
+        suitable_numbers = []
+        for book_number in book_numbers_rooms:
+            if book_number.arrival_date and book_number.leaving_date:
+                date_in = date(day=book_number.arrival_date.day,
+                               month=book_number.arrival_date.month,
+                               year=book_number.arrival_date.year)
+                date_out = date(day=book_number.leaving_date.day,
+                                month=book_number.leaving_date.month,
+                                year=book_number.leaving_date.year)
+                if date_in == room.date_in and date_out == room.date_out:
+                    suitable_numbers.append(book_number.room_key)
+        print(book_numbers_rooms, suitable_numbers)
+        rooms = db_session.query(models.Room).filter(and_(models.Room.room_id.in_(suitable_numbers),
+                                                          models.Room.room_space == room.space_occupied)).all()
+        print(rooms)
         return rooms
     except Exception as e:
         raise e
@@ -108,26 +119,50 @@ async def get_all_booking_numbers(db_session: Session):
     return db_session.query(models.BookNumber).all()
 
 
+async def get_booking_numbers_by_room_key(db_session: Session, room_key: int):
+    booking_numbers = db_session.query(models.BookNumber).filter(models.BookNumber.room_key == room_key).all()
+    return booking_numbers
+
+
 async def create_booking_number(db_session: Session, new_booking_number: schemas.RoomBook):
     try:
-        booking_numbers = await get_all_booking_numbers(db_session)
-        date_in = datetime(day=new_booking_number.date_in.day,
-                           month=new_booking_number.date_in.month,
-                           year=new_booking_number.date_in.year)
-        date_out = datetime(day=new_booking_number.date_out.day,
-                            month=new_booking_number.date_out.month,
-                            year=new_booking_number.date_out.year)
-        print(date_in, date_out)
-        for number in booking_numbers:
-            if (number.arrival_date < date_in < number.leaving_date or
-                number.arrival_date < date_out < number.leaving_date):
-                raise ValueError('Номера брони пересекаются!')
-        book_num = models.BookNumber(room_key=new_booking_number.room_id,
-                                     arrival_date=date_in,
-                                     leaving_date=date_out)
-        db_session.add(book_num)
-        db_session.commit()
-        db_session.refresh(book_num)
-        return book_num
+        booking_numbers = await get_booking_numbers_by_room_key(db_session=db_session,
+                                                                room_key=new_booking_number.room_id)
+        if booking_numbers:
+            for number in booking_numbers:
+                if number.arrival_date and number.leaving_date:
+                    date_in = date(day=number.arrival_date.day,
+                                   month=number.arrival_date.month,
+                                   year=number.arrival_date.year)
+                    date_out = date(day=number.leaving_date.day,
+                                    month=number.leaving_date.month,
+                                    year=number.leaving_date.year)
+                    if (date_in <= new_booking_number.date_in < date_out or
+                        date_in < new_booking_number.date_out < date_out):
+                        raise ValueError('Номера брони пересекаются!')
+            book_num = models.BookNumber(room_key=new_booking_number.room_id,
+                                         arrival_date=new_booking_number.date_in,
+                                         leaving_date=new_booking_number.date_out)
+            db_session.add(book_num)
+            db_session.commit()
+            db_session.refresh(book_num)
+            return book_num
+        raise ValueError('Такой комнаты не существует!')
     except Exception as e:
         raise e
+
+
+async def delete_booking_number(db_session: Session, booking_number_id: int):
+    number = await get_booking_info(db_session=db_session, booking_number=booking_number_id)
+    if number.arrival_date - datetime.now() > timedelta(days=3):
+        db_session.delete(number)
+        db_session.commit()
+        return 'Бронь снята'
+    return 'Бронь не может быть снята'
+
+
+async def get_booking_numbers_and_room_info_by_room_id(db_session: Session, room_id: int):
+    booking_numbers = db_session.execute(select(models.BookNumber, models.Room)
+                                         .join(models.BookNumber)
+                                         .where(models.Room.room_id == room_id))
+    return booking_numbers.fetchall()

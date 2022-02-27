@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Отмена брони</title>
+{% endblock %}
+{% block content %}
+<div class="my-5 d-flex justify-content-center">
+    <form class="d-flex flex-column" action="/delete_booking_number" method="post">
+        <h4>Отмена брони</h4>
+        <div class="d-flex flex-column my-1">
+            <label class="mb-2">Номер брони</label>
+            <input type="number" placeholder="номер брони" min="0" name="deleting_number"/>
+        </div>
+        <br/>
+        <input type="submit" value="Поиск">
+    </form>
+</div>
+<div class="my-5 d-flex justify-content-center">
+    {% if delete_result %}
+   <h5>{{ delete_result }}</h5>
+    {% endif %}
+</div>
+{% endblock %}

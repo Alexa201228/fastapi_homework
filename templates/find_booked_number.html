@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Поиск брони</title>
+{% endblock %}
+{% block content %}
+<div class="my-5 d-flex justify-content-center">
+    <form class="d-flex flex-column" action="/booking_number_info" method="post">
+        <h4>Поиск брони</h4>
+        <div class="d-flex flex-column my-1">
+            <label class="mb-2">Номер брони</label>
+            <input type="number" placeholder="номер брони" min="0" name="booking_num"/>
+        </div>
+        <br/>
+        <input type="submit" value="Поиск">
+    </form>
+</div>
+<div class="my-5 d-flex">
+    <table class="mx-5 w-100">
+        <thead>
+            <tr>
+                <th>Номер брони</th>
+                <th>Дата заезда</th>
+                <th>Дата отъезда</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if booking_number %}
+            <tr>
+                <td>{{ booking_number.number_id }}</td>
+                <td>{{ booking_number.arrival_date }}</td>
+                <td>{{ booking_number.leaving_date }}</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

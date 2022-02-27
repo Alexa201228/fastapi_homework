@@ -1,15 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}
-<title>Номера брони</title>
+<title>Поиск комнаты</title>
 {% endblock %}
 {% block content %}
 <div class="my-5 d-flex justify-content-center">
-    <form class="d-flex flex-column" action="/add_booking_number" method="post">
-        <h4>Создать бронь</h4>
-        <div class="d-flex flex-column my-1">
-            <label class="mb-2">Номер комнаты</label>
-            <input type="number" placeholder="номер комнаты" min="0" name="room_number"/>
-        </div>
+    <form class="d-flex flex-column" action="/search_room" method="post">
+        <h4>Поиск комнаты</h4>
         <div class="d-flex flex-column my-1">
             <label class="mb-2">Дата заезда</label>
             <input type="date" placeholder="дата заезда" name="date_in"/>
@@ -18,8 +14,12 @@
             <label class="mb-2">Дата отъезда</label>
             <input type="date" placeholder="дата отъезда" name="date_out">
         </div>
+        <div class="d-flex flex-column my-1">
+            <label class="mb-2">Количество мест</label>
+            <input type="number" placeholder="количество мест" min="1" name="room_space"/>
+        </div>
         <br/>
-        <input type="submit" value="Добавить">
+        <input type="submit" value="Поиск">
     </form>
 </div>
 <div class="my-5 d-flex">
@@ -27,16 +27,16 @@
         <thead>
             <tr>
                 <th>Номер комнаты</th>
-                <th>Дата заезда</th>
-                <th>Дата отъезда</th>
+                <th>Вместительность</th>
+                <th>Цена</th>
             </tr>
         </thead>
         <tbody>
-            {% for booking in booking_rooms %}
+            {% for room in rooms %}
             <tr>
-                <td>{{ booking.room_key }}</td>
-                <td>{{ booking.arrival_date }}</td>
-                <td>{{ booking.leaving_date }}</td>
+                <td>{{ room.room_id }}</td>
+                <td>{{ room.room_space }}</td>
+                <td>{{ room.price_for_night }}</td>
             </tr>
             {% endfor %}
         </tbody>

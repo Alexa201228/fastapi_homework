@@ -13,7 +13,19 @@
               <a class="nav-link" aria-current="page" href="/rooms">Комнаты</a>
           </li>
         <li class="nav-item">
-          <a class="nav-link" href="/booking_numbers">Брони номеров</a>
+          <a class="nav-link" href="/booking_numbers">Создать бронь номера</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/search_room">Поиск номера</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/booking_number_info">Поиск брони</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/delete_booking_number">Отмена брони</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/get_all_room_bookings">Найти брони комнаты</a>
         </li>
         {% if request.cookies.get('user_id') %}
         <li class="nav-item">
